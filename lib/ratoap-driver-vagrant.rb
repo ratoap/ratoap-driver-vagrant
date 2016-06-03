@@ -1,0 +1,1 @@
+require "ratoap/driver/vagrant"
