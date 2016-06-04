@@ -1,4 +1,4 @@
-require "ratoap/driver/vagrant/version"
+require_relative "vagrant/version"
 
 module Ratoap
   module Driver

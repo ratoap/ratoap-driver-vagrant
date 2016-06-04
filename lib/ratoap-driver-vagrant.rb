@@ -1,1 +1,1 @@
-require "ratoap/driver/vagrant"
+require_relative "ratoap/driver/vagrant"
