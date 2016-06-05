@@ -3,5 +3,5 @@
 require_relative '../lib/ratoap/driver/vagrant'
 require_relative '../lib/ratoap/driver/vagrant/cli'
 
-exit Ratoap::CLI.run(ARGV)
+exit Ratoap::Driver::Vagrant::CLI.run(ARGV)
 
