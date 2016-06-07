@@ -7,9 +7,9 @@ module Ratoap
   module Driver
     module Vagrant
 
-      def self.logger
+      def self.logger(file = nil)
         @@logger ||= (
-          Logger.new(STDOUT)
+          Logger.new(file || STDOUT)
         )
       end
 

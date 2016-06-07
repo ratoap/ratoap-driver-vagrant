@@ -1,9 +1,29 @@
+require 'optparse'
+require 'ostruct'
+
 module Ratoap
   module Driver
     module Vagrant
+
+
       module CLI
-        def self.run(argv = ARGV)
-          logger = Ratoap::Driver::Vagrant.logger
+        def self.argv_parse(args)
+          options = OpenStruct.new
+
+          opt_parser = OptionParser.new do |opts|
+            opts.on("-l", "--logger file", String, "Set logger file") do |logger|
+              options.logger = logger
+            end
+          end
+
+          opt_parser.parse!(args)
+          options
+        end
+
+        def self.run(args = ARGV)
+          options = argv_parse(args)
+
+          logger = Ratoap::Driver::Vagrant.logger options.logger
           redis = Ratoap::Driver::Vagrant.redis
 
           logger.info "subscribe ratoap:client_conn"
