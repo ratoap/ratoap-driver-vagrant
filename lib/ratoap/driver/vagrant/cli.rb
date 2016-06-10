@@ -1,5 +1,6 @@
 require 'optparse'
 require 'ostruct'
+require 'json'
 
 module Ratoap
   module Driver
@@ -29,7 +30,7 @@ module Ratoap
           logger.info "subscribe ratoap:client_conn"
           redis.subscribe_with_timeout(5, "ratoap:client_conn") do |on|
             on.message do |channel, message|
-              puts message
+              logger.info JSON.parse(message)
             end
           end
 
