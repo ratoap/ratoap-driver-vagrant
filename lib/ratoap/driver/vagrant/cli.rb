@@ -30,7 +30,19 @@ module Ratoap
           logger.info "subscribe ratoap:client_conn"
           redis.subscribe_with_timeout(5, "ratoap:client_conn") do |on|
             on.message do |channel, message|
-              logger.info JSON.parse(message)
+              payload = JSON.parse(message)
+
+              logger.info "  message: #{payload}"
+              case payload['act']
+              when 'wait'
+                logger.info 'wait'
+                redis_script_sha = payload['redis_script_shas']['get_connect_identity']
+                logger.info redis_script_sha
+                # redis.evalsha(redis_script_sha)
+              when 'quit'
+                logger.info 'quit'
+                exit
+              end
             end
           end
 
