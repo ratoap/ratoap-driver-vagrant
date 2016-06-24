@@ -28,25 +28,32 @@ module Ratoap
           redis = Ratoap::Driver::Vagrant.redis
 
           logger.info "subscribe ratoap:client_conn"
-          redis.subscribe_with_timeout(5, "ratoap:client_conn") do |on|
+          redis.subscribe("ratoap:client_conn") do |on|
+            on.subscribe do |channel, subscriptions|
+              logger.info "Subscribed to ##{channel} (#{subscriptions} subscriptions)"
+            end
+
             on.message do |channel, message|
               payload = JSON.parse(message)
+              logger.info "##{channel}: #{payload}"
 
-              logger.info "  message: #{payload}"
               case payload['act']
               when 'wait'
                 logger.info 'wait'
                 redis_script_sha = payload['redis_script_shas']['get_connect_identity']
-                logger.info redis_script_sha
-                # redis.evalsha(redis_script_sha)
+                redis.evalsha(redis_script_sha)
               when 'quit'
                 logger.info 'quit'
-                exit
+                redis.unsubscribe("ratoap:client_conn")
               end
+            end
+
+            on.unsubscribe do |channel, subscriptions|
+              logger.info "Unsubscribed from ##{channel} (#{subscriptions} subscriptions)"
             end
           end
 
-          0
+          logger.info 'driver-vagrant exit'
         end
       end
     end
