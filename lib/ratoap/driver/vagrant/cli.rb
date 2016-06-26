@@ -40,8 +40,10 @@ module Ratoap
               case payload['act']
               when 'wait'
                 logger.info 'wait'
-                redis_script_sha = payload['redis_script_shas']['get_connect_identity']
-                redis.evalsha(redis_script_sha)
+                Process.fork do
+                  redis_script_sha = payload['redis_script_shas']['get_connect_identity']
+                  redis.evalsha(redis_script_sha)
+                end
               when 'quit'
                 logger.info 'quit'
                 redis.unsubscribe("ratoap:client_conn")
