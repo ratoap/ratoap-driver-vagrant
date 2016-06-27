@@ -41,8 +41,8 @@ module Ratoap
               when 'wait'
                 logger.info 'wait'
                 Process.fork do
-                  redis_script_sha = payload['redis_script_shas']['get_connect_identity']
-                  redis.evalsha(redis_script_sha)
+                  get_conn_identity_redis_script_sha = payload['redis_script_shas']['get_conn_identity']
+                  redis.evalsha(get_conn_identity_redis_script_sha)
                 end
               when 'quit'
                 logger.info 'quit'
