@@ -41,8 +41,10 @@ module Ratoap
               when 'wait'
                 logger.info 'wait'
                 Process.fork do
+                  redis = Ratoap::Driver::Vagrant.fork_redis
                   get_conn_identity_redis_script_sha = payload['redis_script_shas']['get_conn_identity']
-                  redis.evalsha(get_conn_identity_redis_script_sha)
+                  r = redis.evalsha(get_conn_identity_redis_script_sha, {argv: ['driver', 'vagrant_ruby', 'xxx']})
+                  logger.info "conn_identity: #{get_conn_identity_redis_script_sha} #{r}"
                 end
               when 'quit'
                 logger.info 'quit'
